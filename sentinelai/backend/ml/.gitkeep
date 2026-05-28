@@ -1,0 +1,6 @@
+# Place model weights here:
+#   yolov8n_rdd2022.pt   — YOLOv8 nano fine-tuned on RDD2022
+#   xgboost_risk_model.pkl — trained XGBoost risk model (optional, formula fallback used if absent)
+#
+# Download yolov8n_rdd2022.pt from:
+#   https://github.com/sekilab/RoadDamageDetector

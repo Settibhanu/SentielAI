@@ -1,0 +1,62 @@
+{
+  "code": "IN",
+  "name": "India",
+  "currency": "INR",
+  "currency_symbol": "₹",
+  "road_types": ["NH", "SH", "MDR", "Urban", "Local"],
+  "road_type_labels": {
+    "NH": "National Highway",
+    "SH": "State Highway",
+    "MDR": "Major District Road",
+    "Urban": "Urban Road",
+    "Local": "Local / Village Road"
+  },
+  "authority_hierarchy": {
+    "NH": "NHAI",
+    "SH": "State PWD",
+    "MDR": "Zilla Parishad",
+    "Urban": "Municipal Corporation",
+    "Local": "Gram Panchayat"
+  },
+  "sla_days": {
+    "NH": 3,
+    "SH": 5,
+    "MDR": 7,
+    "Urban": 10,
+    "Local": 14
+  },
+  "fund_sources": [
+    "PMGSY",
+    "NHAI",
+    "State PWD",
+    "Municipal Corporation",
+    "CRIF",
+    "MLA LAD Fund",
+    "MP LAD Fund",
+    "Smart Cities Mission",
+    "AMRUT"
+  ],
+  "escalation_chain": {
+    "NH": ["EE", "SE", "CE (NHAI Regional)"],
+    "SH": ["EE", "SE", "CE (PWD)"],
+    "MDR": ["EE", "CEO Zilla Parishad"],
+    "Urban": ["EE", "Commissioner"],
+    "Local": ["EE", "BDO"]
+  },
+  "demo_zones": [
+    {
+      "name": "Silk Board Junction",
+      "city": "Bengaluru",
+      "road_type": "SH",
+      "lat": 12.9176,
+      "lng": 77.6228
+    },
+    {
+      "name": "Marathahalli Bridge",
+      "city": "Bengaluru",
+      "road_type": "NH",
+      "lat": 12.9591,
+      "lng": 77.7006
+    }
+  ]
+}

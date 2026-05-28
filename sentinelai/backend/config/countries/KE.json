@@ -1,0 +1,59 @@
+{
+  "code": "KE",
+  "name": "Kenya",
+  "currency": "KES",
+  "currency_symbol": "KSh",
+  "road_types": ["A", "B", "C", "D", "Urban"],
+  "road_type_labels": {
+    "A": "Class A — National Trunk Road",
+    "B": "Class B — Regional Road",
+    "C": "Class C — County Road",
+    "D": "Class D — Rural Access Road",
+    "Urban": "Urban Road"
+  },
+  "authority_hierarchy": {
+    "A": "KeNHA",
+    "B": "KURA",
+    "C": "KeRRA County Engineer",
+    "D": "KeRRA County Engineer",
+    "Urban": "County Government"
+  },
+  "sla_days": {
+    "A": 3,
+    "B": 5,
+    "C": 7,
+    "D": 10,
+    "Urban": 10
+  },
+  "fund_sources": [
+    "National Budget",
+    "World Bank",
+    "African Development Bank (AfDB)",
+    "County Government",
+    "KeNHA Budget",
+    "Road Maintenance Levy Fund (RMLF)"
+  ],
+  "escalation_chain": {
+    "A": ["EE", "Regional Manager (KeNHA)"],
+    "B": ["EE", "Regional Director (KURA)"],
+    "C": ["County Engineer", "County Director of Roads"],
+    "D": ["County Engineer", "County Director of Roads"],
+    "Urban": ["County Engineer", "County Governor's Office"]
+  },
+  "demo_zones": [
+    {
+      "name": "Uhuru Highway Junction",
+      "city": "Nairobi",
+      "road_type": "A",
+      "lat": -1.2921,
+      "lng": 36.8219
+    },
+    {
+      "name": "Thika Road Bypass",
+      "city": "Nairobi",
+      "road_type": "A",
+      "lat": -1.2195,
+      "lng": 36.8878
+    }
+  ]
+}
