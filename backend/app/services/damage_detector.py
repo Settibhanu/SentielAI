@@ -1,10 +1,6 @@
 """
 YOLOv8 damage detector.
-Loads yolov8n_rdd2022.pt (fine-tuned on Road Damage Detection 2022 dataset).
-
-Model download:
-  Place the .pt file at: backend/ml/yolov8n_rdd2022.pt
-  Source: https://github.com/sekilab/RoadDamageDetector
+Loads yolov8_rdd2022.pt from backend/ml/.
 """
 import os
 from pathlib import Path
@@ -12,7 +8,7 @@ from typing import Optional
 
 # Lazy import — ultralytics is only loaded when the model is first used
 _model = None
-MODEL_PATH = Path(__file__).parent.parent.parent / "ml" / "yolov8n_rdd2022.pt"
+MODEL_PATH = Path(__file__).parent.parent.parent / "ml" / "yolov8_rdd2022.pt"
 
 
 def _get_model():
@@ -22,7 +18,7 @@ def _get_model():
         if not MODEL_PATH.exists():
             raise FileNotFoundError(
                 f"YOLOv8 model not found at {MODEL_PATH}. "
-                "Download yolov8n_rdd2022.pt from HuggingFace and place it in backend/ml/"
+                "Place yolov8_rdd2022.pt in backend/ml/"
             )
         _model = YOLO(str(MODEL_PATH))
     return _model

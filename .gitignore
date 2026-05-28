@@ -16,6 +16,7 @@ build/
 node_modules/
 frontend/dist/
 frontend/.vite/
+package-lock.json
 
 # ML model weights (large binary files — download separately)
 backend/ml/*.pt

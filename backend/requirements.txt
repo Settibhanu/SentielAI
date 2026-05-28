@@ -15,11 +15,12 @@ psycopg2-binary==2.9.9
 celery==5.3.6
 redis==5.0.1
 
-# ── AI / ML ───────────────────────────────────────────────────────────────────
+# ── AI / ML (CPU-only) ────────────────────────────────────────────────────────
+# ultralytics pulls torch automatically; force CPU-only torch first via Dockerfile
+# or install torch+cpu before this file:
+#   pip install torch==2.2.2 torchvision==0.17.2 --index-url https://download.pytorch.org/whl/cpu
 ultralytics==8.1.18
 opencv-python-headless==4.9.0.80
-xgboost==2.0.3
-scikit-learn==1.4.0
 numpy==1.26.4
 Pillow==10.2.0
 

@@ -16,7 +16,7 @@ from fastapi import APIRouter, HTTPException, BackgroundTasks
 from app.schemas.pydantic_schemas import (
     ReportSubmit, ReportSubmitResponse, ReportStatus, OfflineSyncBatch,
 )
-from app.services import damage_detector, routing_service, risk_engine
+from app.services import routing_service, risk_engine
 
 router = APIRouter()
 
@@ -56,17 +56,14 @@ async def submit_report(body: ReportSubmit, background_tasks: BackgroundTasks):
     if body.image:
         try:
             image_url = _save_image(body.image, report_id)
-            # 2. Run YOLOv8 (sync for now; move to Celery for production)
-            detections = damage_detector.detect_damage(str(UPLOAD_DIR / f"{report_id}.jpg"))
-            if detections:
-                top = max(detections, key=lambda d: d["severity_score"])
-                ai_severity = top["severity_score"]
-                ai_damage_class = top["class"]
-        except FileNotFoundError:
-            # Model not downloaded yet — use manual severity
-            pass
+            image_filename = f"{report_id}.jpg"
+            # Dispatch YOLO inference as a background task (non-blocking)
+            from app.tasks import process_report_image
+            process_report_image.delay(report_id, image_filename)
+            # ai_severity and ai_damage_class will be updated async;
+            # citizen gets immediate response with manual_severity as fallback
         except Exception as e:
-            # Don't fail the whole report if AI fails
+            # Don't fail the whole report if task dispatch fails
             pass
 
     # 3. Routing info (PostGIS lookup — returns None if DB not seeded)
