@@ -6,7 +6,7 @@
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688?logo=fastapi)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)](https://react.dev)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+PostGIS-336791?logo=postgresql)](https://postgis.net)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql)](https://www.postgresql.org)
 [![PWA](https://img.shields.io/badge/PWA-Offline--first-5A0FC8?logo=pwa)](https://web.dev/progressive-web-apps/)
 
 ---
@@ -23,11 +23,32 @@ SentinelAI solves all four.
 
 ---
 
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│              Docker (infrastructure only)                    │
+│   PostgreSQL :5432          Redis :6379                      │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────────────┐
+│                  Local (Windows)                             │
+│                                                              │
+│   FastAPI backend  :8000    Celery worker                    │
+│   React frontend   :5173    YOLO inference (CPU)             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+Docker runs **only** PostgreSQL and Redis — no ML images, no large builds.
+Everything else runs directly on your machine, keeping Docker storage minimal.
+
+---
+
 ## Key Features
 
 | Feature | Description |
 |---|---|
-| 🤖 **AI Damage Detection** | YOLOv8n classifies potholes, cracks, flooding from photos |
+| 🤖 **AI Damage Detection** | YOLOv8s classifies potholes, cracks, flooding from photos |
 | 📊 **API Score Engine** | Predictive zone-level risk score (0–100) from 4 data sources |
 | 🏛 **EE Auto-Routing** | Complaint → correct Executive Engineer (NH→NHAI, SH→PWD, MDR→ZP) |
 | 💰 **Budget Transparency** | Sanctioned vs spent, fund source URL, contractor, recurring damage flag |
@@ -40,270 +61,182 @@ SentinelAI solves all four.
 
 ---
 
-## Architecture
+## Prerequisites
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Citizen PWA (React + Vite)                │
-│  Heatmap │ Report │ Authority │ ZoneDetail │ Community       │
-│  Offline IndexedDB queue │ Service Worker │ i18n EN+HI       │
-└──────────────────────┬──────────────────────────────────────┘
-                       │ REST API
-┌──────────────────────▼──────────────────────────────────────┐
-│                   FastAPI Backend                            │
-│  /reports  /zones  /dashboard  /routing  /config  /chatbot  │
-└──────┬──────────────┬──────────────────────┬────────────────┘
-       │              │                      │
-┌──────▼──────┐ ┌─────▼──────┐ ┌────────────▼────────────────┐
-│ PostgreSQL  │ │   Redis    │ │      AI Services             │
-│ + PostGIS   │ │  + Celery  │ │  YOLOv8n damage detection   │
-│ 8 tables    │ │  workers   │ │  API Score risk engine       │
-└─────────────┘ └────────────┘ │  Intent-based chatbot        │
-                                └─────────────────────────────┘
-```
+| Tool | Version | Purpose |
+|---|---|---|
+| Docker Desktop | Latest | PostgreSQL + Redis only |
+| Python | 3.11 | Backend + Celery |
+| Node.js | 20+ | Frontend |
+| Git | Any | Clone repo |
 
 ---
 
-## Tech Stack
+## Quick Start
 
-**Frontend**
-- React 18 + Vite 5
-- Tailwind CSS 3
-- Leaflet.js + react-leaflet
-- Recharts (risk breakdown charts)
-- Zustand (state management)
-- vite-plugin-pwa + Workbox (service worker)
-- idb (IndexedDB offline queue)
-- react-i18next (EN + HI)
+### 1. Clone and configure
 
-**Backend**
-- FastAPI (Python 3.11)
-- PostgreSQL 15 + PostGIS 3.3
-- SQLAlchemy 2 + GeoAlchemy2
-- Celery + Redis (async AI jobs)
-- Pydantic v2 (schema validation)
+```bash
+git clone <repo-url>
+cd SentielAI
+cp .env.example .env
+```
 
-**AI / ML**
-- YOLOv8n (ultralytics) — fine-tuned on RDD2022 dataset
-- Formula-based API Score engine (4 components)
-- Intent-based chatbot (keyword matching, no external API)
-- XGBoost (stretch goal — formula fallback used for demo)
+Edit `.env` — at minimum set your OpenWeatherMap key (the DB defaults work as-is):
 
-**External APIs (free tier)**
-- OpenWeatherMap — rainfall data for weather risk component
-- Nominatim / OSM — geocoding and road network data
-- OSRM — routing (no API key needed)
+```env
+POSTGRES_DB=sentielai
+POSTGRES_USER=sentinel
+POSTGRES_PASSWORD=sentinel123
+DATABASE_URL=postgresql://sentinel:sentinel123@localhost:5432/sentielai
+REDIS_URL=redis://localhost:6379/0
+OPENWEATHER_API_KEY=your_key_here
+```
+
+### 2. Start infrastructure (Docker)
+
+```bash
+docker compose up -d
+```
+
+This starts only PostgreSQL (port 5432) and Redis (port 6379).
+No backend image, no ML image — minimal storage footprint.
+
+Verify they're running:
+```bash
+docker compose ps
+```
+
+### 3. Backend
+
+Open a terminal in the `backend/` folder:
+
+```bash
+cd backend
+
+# Create and activate virtual environment
+python -m venv venv
+venv\Scripts\activate        # Windows CMD
+# or: venv\Scripts\Activate.ps1   (PowerShell)
+
+# Install dependencies (CPU-only PyTorch installed first to avoid CUDA download)
+pip install torch==2.2.2 torchvision==0.17.2 --index-url https://download.pytorch.org/whl/cpu
+pip install -r requirements.txt
+
+# Run FastAPI
+uvicorn app.main:app --reload --port 8000
+```
+
+API available at: http://localhost:8000
+Swagger docs at: http://localhost:8000/docs
+
+### 4. Celery worker
+
+Open a second terminal in `backend/` with the venv activated:
+
+```bash
+cd backend
+venv\Scripts\activate
+
+celery -A app.celery_app:celery worker --loglevel=info --pool=solo
+```
+
+> `--pool=solo` is required on Windows (Celery's default prefork pool doesn't work on Windows).
+
+### 5. Frontend
+
+Open a third terminal in `frontend/`:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend available at: http://localhost:5173
+
+---
+
+## YOLO Model Setup
+
+Place your model weights file in `backend/ml/`:
+
+```
+backend/
+└── ml/
+    └── yolov8_rdd2022.pt    ← your model file goes here
+```
+
+The damage detector loads it automatically on first inference. If the file is absent, the system falls back to manual severity scoring — the app still runs.
+
+> This setup avoids packaging large model weights inside Docker images, saving several GB of Docker storage.
+
+---
+
+## Services at a Glance
+
+| Service | How it runs | URL / Port |
+|---|---|---|
+| PostgreSQL | Docker | localhost:5432 |
+| Redis | Docker | localhost:6379 |
+| FastAPI backend | Local (uvicorn) | http://localhost:8000 |
+| React frontend | Local (Vite) | http://localhost:5173 |
+| Celery worker | Local | — |
+| YOLO inference | Local (CPU) | — |
 
 ---
 
 ## Folder Structure
 
 ```
-sentinelai/
-├── frontend/
-│   ├── src/
-│   │   ├── pages/
-│   │   │   ├── Heatmap.jsx          Live risk heatmap
-│   │   │   ├── Report.jsx           Citizen damage report
-│   │   │   ├── Authority.jsx        Authority dashboard
-│   │   │   ├── ZoneDetail.jsx       Zone risk breakdown
-│   │   │   └── Community.jsx        Leaderboard + impact
-│   │   ├── components/
-│   │   │   ├── chatbot/
-│   │   │   │   ├── ChatbotWidget.jsx Floating FAB + overlay
-│   │   │   │   ├── ChatWindow.jsx   Chat panel
-│   │   │   │   ├── ChatMessage.jsx  Message bubble
-│   │   │   │   ├── QuickActions.jsx Chip suggestions
-│   │   │   │   └── TypingIndicator.jsx Animated dots
-│   │   │   ├── map/
-│   │   │   │   ├── LeafletMap.jsx
-│   │   │   │   ├── ZoneLayer.jsx    Color-coded polygons
-│   │   │   │   └── AccidentMarkers.jsx
-│   │   │   ├── report/
-│   │   │   │   ├── CameraCapture.jsx
-│   │   │   │   ├── DamageTypeSelector.jsx
-│   │   │   │   └── RoadTypeSelector.jsx
-│   │   │   ├── dashboard/
-│   │   │   │   ├── PriorityQueue.jsx
-│   │   │   │   ├── RepairTracker.jsx
-│   │   │   │   ├── BudgetTransparencyTable.jsx
-│   │   │   │   └── ComplaintInbox.jsx
-│   │   │   └── shared/
-│   │   │       ├── RiskBadge.jsx
-│   │   │       ├── ApiScoreGauge.jsx
-│   │   │       ├── FundSourceBadge.jsx
-│   │   │       ├── OfflineBanner.jsx
-│   │   │       ├── CountrySelector.jsx
-│   │   │       └── PwaInstallPrompt.jsx
-│   │   ├── lib/
-│   │   │   ├── offlineQueue.js      IndexedDB queue + sync
-│   │   │   └── i18n.js              EN + HI translations
-│   │   └── store/
-│   │       ├── useAppStore.js       Global app state
-│   │       └── useChatStore.js      Chat message state
-│   ├── package.json
-│   └── vite.config.js               PWA + proxy config
+SentielAI/
+├── docker-compose.yml           PostgreSQL + Redis only
+├── .env.example                 Copy to .env
 │
 ├── backend/
 │   ├── app/
-│   │   ├── main.py                  FastAPI app + CORS
-│   │   ├── routers/
-│   │   │   ├── reports.py           POST /api/reports/submit
-│   │   │   ├── zones.py             GET  /api/zones/heatmap
-│   │   │   ├── authority.py         GET  /api/dashboard/*
-│   │   │   ├── routing.py           POST /api/routing/find-ee
-│   │   │   ├── config.py            GET  /api/config/countries
-│   │   │   └── chatbot.py           POST /api/chatbot/message
-│   │   ├── services/
+│   │   ├── main.py              FastAPI entry point
+│   │   ├── celery_app.py        Celery instance + config
+│   │   ├── tasks.py             Background tasks (YOLO, weather refresh)
+│   │   ├── routers/             API route handlers
+│   │   ├── services/            Business logic
+│   │   │   ├── damage_detector.py   YOLOv8 inference
 │   │   │   ├── risk_engine.py       API Score formula
-│   │   │   ├── damage_detector.py   YOLOv8n inference
 │   │   │   ├── weather_service.py   OpenWeatherMap
-│   │   │   ├── routing_service.py   PostGIS EE lookup
+│   │   │   ├── routing_service.py   EE jurisdiction lookup
 │   │   │   └── chatbot_service.py   Intent classification
-│   │   ├── models/
-│   │   │   └── db_models.py         8 SQLAlchemy tables
-│   │   └── schemas/
-│   │       └── pydantic_schemas.py  Request/response models
-│   ├── config/
-│   │   └── countries/
-│   │       ├── IN.json              India config
-│   │       └── KE.json              Kenya config
-│   ├── data/
-│   │   ├── seed_chennai_zones.py    OSM → 500m grid
-│   │   └── seed_sample_data.py      Demo zones + accidents
-│   ├── ml/
-│   │   └── .gitkeep                 Place yolov8n_rdd2022.pt here
+│   │   ├── models/              SQLAlchemy ORM models
+│   │   └── schemas/             Pydantic request/response schemas
+│   ├── config/countries/        IN.json, KE.json
+│   ├── data/                    DB seed scripts
+│   ├── ml/                      ← place yolov8_rdd2022.pt here
 │   └── requirements.txt
 │
-└── docker-compose.yml
-```
-
----
-
-## Setup Instructions
-
-### Prerequisites
-- Docker Desktop (recommended) **or** Python 3.11 + Node.js 20 + PostgreSQL 15
-- Git
-
-### 1. Clone and configure
-
-```bash
-git clone <repo-url>
-cd sentinelai
-cp .env.example .env
-```
-
-Edit `.env`:
-```env
-OPENWEATHER_API_KEY=your_key_here   # https://openweathermap.org/api (free)
-DATABASE_URL=postgresql://sentinel:sentinel123@localhost/sentinelai
-REDIS_URL=redis://localhost:6379/0
-```
-
-### 2. Docker (recommended — one command)
-
-```bash
-docker compose up --build
-```
-
-This starts:
-| Service | URL |
-|---|---|
-| Frontend | http://localhost:3000 |
-| Backend API | http://localhost:8000 |
-| API Docs (Swagger) | http://localhost:8000/docs |
-| PostgreSQL | localhost:5432 |
-| Redis | localhost:6379 |
-
-### 3. Seed the database
-
-```bash
-# Inside the backend container:
-docker compose exec backend python -m data.seed_sample_data
-```
-
-Or locally:
-```bash
-cd backend
-python -m data.seed_sample_data
-```
-
----
-
-## Running Without Docker
-
-### Backend
-
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-
-# Start PostgreSQL + PostGIS (must be running)
-# Create DB: createdb sentinelai && psql sentinelai -c "CREATE EXTENSION postgis;"
-
-uvicorn app.main:app --reload --port 8000
-```
-
-### Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-# Opens at http://localhost:3000
-```
-
-### Redis + Celery workers
-
-```bash
-# Terminal 1 — Redis
-redis-server
-
-# Terminal 2 — Celery worker
-cd backend
-celery -A app.celery_app worker --loglevel=info
+└── frontend/
+    ├── src/
+    │   ├── pages/               Heatmap, Report, Authority, ZoneDetail, Community
+    │   ├── components/          chatbot/, map/, report/, dashboard/, shared/
+    │   └── lib/                 offlineQueue.js, i18n.js
+    └── package.json
 ```
 
 ---
 
 ## Database Setup
 
-The schema uses 8 tables:
+Run migrations after the backend venv is active and Postgres is running:
 
-| Table | Purpose |
-|---|---|
-| `countries` | Country config (road types, authority hierarchy, SLA days) |
-| `jurisdictions` | EE contact + PostGIS polygon per road type |
-| `road_zones` | 500m grid cells with API Score + 7-day forecast |
-| `reports` | Citizen damage reports with AI severity + offline sync flag |
-| `complaint_routing` | EE routing with SLA deadline + escalation level |
-| `repairs` | Contractor, sanctioned/spent amounts, fund source |
-| `accident_history` | Historical accidents (seeded from iRAD/MoRTH) |
-| `citizen_contributors` | Trust score + badges for data quality weighting |
-
-Run migrations:
 ```bash
 cd backend
+venv\Scripts\activate
 alembic upgrade head
 ```
 
----
+Seed sample data:
 
-## YOLOv8 Model Setup
-
-1. Download `yolov8n_rdd2022.pt` from [RoadDamageDetector](https://github.com/sekilab/RoadDamageDetector)
-2. Place it at `backend/ml/yolov8n_rdd2022.pt`
-
-The model detects 4 damage classes:
-- `pothole`
-- `alligator_crack`
-- `longitudinal_crack`
-- `transverse_crack`
-
-If the model file is absent, the system falls back to manual severity scoring.
+```bash
+python -m data.seed_sample_data
+```
 
 ---
 
@@ -334,21 +267,28 @@ Risk categories: **Low** (<25) · **Medium** (25–49) · **High** (50–74) · 
 
 ---
 
+## API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/reports/submit` | Submit damage report with image |
+| POST | `/api/reports/sync-offline` | Batch sync from IndexedDB |
+| GET | `/api/zones/heatmap` | GeoJSON zones with API scores |
+| GET | `/api/zones/{id}/details` | Full zone risk breakdown |
+| GET | `/api/zones/accidents` | Historical accident markers |
+| GET | `/api/dashboard/priority-queue` | Zones ranked by API score |
+| GET | `/api/dashboard/transparency` | Budget + contractor records |
+| GET | `/api/dashboard/complaints` | Complaint routing inbox |
+| POST | `/api/routing/find-ee` | Find EE for lat/lng + road type |
+| GET | `/api/config/countries/{code}` | Country config JSON |
+| POST | `/api/chatbot/message` | Chatbot intent + response |
+| GET | `/health` | Health check |
+
+---
+
 ## Chatbot
 
-The AI chatbot requires **no external API** — it uses keyword matching + rule-based intent classification.
-
-**Endpoint:** `POST /api/chatbot/message`
-
-```json
-{
-  "message": "Who maintains this road?",
-  "lat": 12.97,
-  "lng": 77.59,
-  "zone_id": "zone-001",
-  "language": "en"
-}
-```
+No external LLM API required — keyword matching + rule-based intent classification.
 
 **Supported intents:**
 
@@ -367,91 +307,34 @@ The AI chatbot requires **no external API** — it uses keyword matching + rule-
 
 ## Offline Functionality
 
-SentinelAI works fully offline:
-
-1. **Service Worker** (Workbox via vite-plugin-pwa) caches:
-   - App shell (HTML, JS, CSS)
-   - OSM map tiles (CacheFirst, 500 entries, 7-day TTL)
-   - API responses (StaleWhileRevalidate)
-
-2. **IndexedDB queue** (`idb` library) stores reports submitted offline
-
-3. **Auto-sync** fires on `window.addEventListener('online', ...)` — batch POSTs to `/api/reports/sync-offline`
-
+1. **Service Worker** (Workbox) caches app shell, map tiles, and API responses
+2. **IndexedDB queue** stores reports submitted while offline
+3. **Auto-sync** fires on reconnect — batch POSTs to `/api/reports/sync-offline`
 4. **OfflineBanner** shows pending count: "📶 Offline — 3 report(s) queued"
 
 ---
 
-## PWA Installation
+## Migrating to Full Docker Later
 
-On Android Chrome:
-1. Open http://localhost:3000
-2. Tap the browser menu → "Add to Home Screen"
-3. Or wait for the in-app install prompt
-
-The app works fully offline after installation.
+When you're ready to containerise everything, re-add the backend/frontend/celery services to `docker-compose.yml`. The `Dockerfile` files in `backend/` and `frontend/` are already written and ready to use — this hybrid setup doesn't break anything.
 
 ---
 
-## Country Config System
+## Tech Stack
 
-Country configs live in `backend/config/countries/`:
+**Frontend:** React 18 · Vite 5 · Tailwind CSS · Leaflet.js · Recharts · Zustand · vite-plugin-pwa · idb · react-i18next
 
-```json
-// IN.json (India)
-{
-  "road_types": ["NH", "SH", "MDR", "Urban", "Local"],
-  "authority_hierarchy": {
-    "NH": "NHAI",
-    "SH": "State PWD",
-    "MDR": "Zilla Parishad"
-  },
-  "sla_days": { "NH": 3, "SH": 5, "MDR": 7 },
-  "fund_sources": ["PMGSY", "NHAI", "State PWD", "CRIF", "MLA LAD Fund"]
-}
-```
+**Backend:** FastAPI · Python 3.11 · SQLAlchemy 2 · Celery · Pydantic v2
 
-The frontend `CountrySelector` switches the entire taxonomy. Kenya (`KE.json`) is also included.
+**AI / ML:** YOLOv8s (ultralytics, CPU) · Formula-based API Score · Intent-based chatbot
+
+**Infrastructure:** PostgreSQL 16 · Redis 7 · Docker (infra only)
+
+**External APIs (free tier):** OpenWeatherMap · Nominatim/OSM · OSRM
 
 ---
 
-## API Endpoints
-
-| Method | Endpoint | Description |
-|---|---|---|
-| POST | `/api/reports/submit` | Submit damage report with image |
-| POST | `/api/reports/sync-offline` | Batch sync from IndexedDB |
-| GET | `/api/zones/heatmap` | GeoJSON zones with API scores |
-| GET | `/api/zones/{id}/details` | Full zone risk breakdown |
-| GET | `/api/zones/accidents` | Historical accident markers |
-| GET | `/api/dashboard/priority-queue` | Zones ranked by API score |
-| GET | `/api/dashboard/transparency` | Budget + contractor records |
-| GET | `/api/dashboard/complaints` | Complaint routing inbox |
-| POST | `/api/routing/find-ee` | Find EE for lat/lng + road type |
-| GET | `/api/config/countries/{code}` | Country config JSON |
-| POST | `/api/chatbot/message` | Chatbot intent + response |
-| GET | `/health` | Health check |
-
-Full interactive docs: http://localhost:8000/docs
-
----
-
-## Accessibility (WCAG AA)
-
-- All interactive elements have `aria-label`
-- Minimum 44px tap targets throughout
-- Color contrast ≥ 4.5:1 (dark theme)
-- `role="status"` + `aria-live="polite"` on OfflineBanner
-- `role="dialog"` + `aria-modal` on ChatWindow
-- `role="radiogroup"` on damage/road type selectors
-- Keyboard navigation: Tab, Enter, Escape (closes chatbot)
-- Screen reader tested with NVDA
-
----
-
-## Demo Accounts / Sample Data
-
-No login required for the demo. Sample data includes:
+## Demo Zones (Sample Data)
 
 | Zone | Road Type | API Score | Risk |
 |---|---|---|---|
@@ -460,53 +343,6 @@ No login required for the demo. Sample data includes:
 | Marathahalli Bridge | NH | 61 | High |
 | Koramangala 5th Block | MDR | 38 | Medium |
 | Indiranagar 100ft Road | Urban | 15 | Low |
-
----
-
-## 90-Second Demo Script
-
-| Time | Action | Criterion |
-|------|--------|-----------|
-| 0:00 | Open heatmap — Bengaluru zones colored by risk | Heatmap |
-| 0:10 | Click Silk Board → SH-35, API 83, last relay 2022, forecast 91 | Road type, last relay |
-| 0:20 | Click "Report Damage" — camera opens | Report form |
-| 0:30 | AI verdict: "Pothole, severity 7.4/10" | AI accuracy |
-| 0:50 | "Routed to: PWD EE, Bengaluru South Division 3" | EE routing |
-| 1:00 | Authority Dashboard — zone at top of queue | Priority queue |
-| 1:10 | Transparency table: contractor, ₹ sanctioned, fund source | Budget transparency |
-| 1:20 | Airplane mode → submit → "Queued offline" | Offline PWA |
-| 1:30 | Airplane mode off → "1 report synced" | Auto-sync |
-
----
-
-## Hackathon Alignment
-
-| Judging Criterion | SentinelAI Implementation |
-|---|---|
-| Road type (NH/SH/MDR) | Stored per zone; shown in UI; affects API Score weight |
-| Last relaying date | `road_zones.last_relaying_date`; shown in zone detail |
-| Contractor name | `repairs.contractor_name`; shown in transparency table |
-| Routing to correct EE | `routing_service.py` + PostGIS ST_Within |
-| Sanctioned vs spent | `repairs.amount_sanctioned_inr` + `amount_spent_inr` |
-| Global applicability | IN.json + KE.json; CountrySelector in UI |
-| Offline functionality | PWA + IndexedDB + auto-sync |
-| Data accuracy | YOLOv8 AI + formula-based API Score |
-| Complaint routing | ComplaintInbox + SLA + 72hr escalation |
-| Budget transparency | BudgetTransparencyTable + FundSourceBadge |
-| UI & accessibility | WCAG AA; multilingual; 44px tap targets |
-| Cross-country info | Country config JSON system |
-
----
-
-## Future Scope
-
-- **XGBoost risk model** — replace formula with trained ML model on iRAD data
-- **Real-time WebSocket** — live zone updates as reports come in
-- **SMS escalation** — Twilio integration for 72hr SLA breach alerts
-- **PDF export** — authority priority queue as printable report
-- **Citizen trust scoring** — weight AI severity by contributor trust score
-- **More countries** — Nigeria (NG.json), Bangladesh (BD.json)
-- **Satellite imagery** — periodic road condition assessment via Sentinel-2
 
 ---
 

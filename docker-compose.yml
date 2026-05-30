@@ -1,78 +1,30 @@
+# SentinelAI — Infrastructure only
+# Runs PostgreSQL and Redis locally via Docker.
+# Backend, frontend, and Celery run directly on Windows (see README).
+#
+# Start with:  docker compose up -d
+# Stop with:   docker compose down
+
 version: "3.9"
 
 services:
   db:
-    image: postgis/postgis:15-3.3
+    image: postgres:16
+    restart: unless-stopped
     environment:
-      POSTGRES_DB: sentinelai
-      POSTGRES_USER: sentinel
-      POSTGRES_PASSWORD: sentinel123
+      POSTGRES_DB: ${POSTGRES_DB:-sentielai}
+      POSTGRES_USER: ${POSTGRES_USER:-sentinel}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sentinel123}
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U sentinel -d sentinelai"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   redis:
     image: redis:7-alpine
+    restart: unless-stopped
     ports:
       - "6379:6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    environment:
-      DATABASE_URL: postgresql://sentinel:sentinel123@db/sentinelai
-      REDIS_URL: redis://redis:6379/0
-      OPENWEATHER_API_KEY: ${OPENWEATHER_API_KEY:-}
-    volumes:
-      - ./backend:/app
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-
-  celery_worker:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    environment:
-      DATABASE_URL: postgresql://sentinel:sentinel123@db/sentinelai
-      REDIS_URL: redis://redis:6379/0
-      OPENWEATHER_API_KEY: ${OPENWEATHER_API_KEY:-}
-    volumes:
-      - ./backend:/app
-    command: celery -A app.celery_app:celery worker --loglevel=info
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      VITE_API_URL: http://localhost:8000
-    depends_on:
-      - backend
 
 volumes:
   pgdata:
