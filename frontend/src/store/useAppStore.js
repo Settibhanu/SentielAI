@@ -1,56 +1,58 @@
+/**
+ * SENTINEL SOS — Global App Store (Zustand)
+ */
 import { create } from 'zustand'
-import { getPendingCount } from '../lib/offlineQueue'
 
 const useAppStore = create((set, get) => ({
-  // ── Online status ──────────────────────────────────────────────
+  // ── Online status ──────────────────────────────────────────────────────────
   isOnline: navigator.onLine,
-  pendingOfflineCount: 0,
   setOnline: (v) => set({ isOnline: v }),
-  refreshPendingCount: async () => {
-    const count = await getPendingCount()
-    set({ pendingOfflineCount: count })
+
+  // ── Geolocation ────────────────────────────────────────────────────────────
+  location: { lat: null, lon: null, accuracy: null },
+  locationError: null,
+  locationLoading: false,
+  setLocation: (loc) => set({ location: loc, locationError: null }),
+  setLocationError: (err) => set({ locationError: err, locationLoading: false }),
+  setLocationLoading: (v) => set({ locationLoading: v }),
+
+  // ── Active SOS event ───────────────────────────────────────────────────────
+  activeSOSEvent: null,
+  setActiveSOSEvent: (event) => set({ activeSOSEvent: event }),
+  clearSOSEvent: () => set({ activeSOSEvent: null }),
+
+  // ── Triage result ──────────────────────────────────────────────────────────
+  triageResult: null,
+  setTriageResult: (result) => set({ triageResult: result }),
+
+  // ── Nearby services ────────────────────────────────────────────────────────
+  nearbyServices: {},
+  setNearbyServices: (services) => set({ nearbyServices: services }),
+
+  // ── Map settings ───────────────────────────────────────────────────────────
+  mapRadius: 5000,
+  setMapRadius: (r) => set({ mapRadius: r }),
+  activeCategories: [
+    'hospital', 'ambulance', 'police', 'fire_station',
+    'mechanic', 'fuel_station', 'puncture_shop', 'towing'
+  ],
+  toggleCategory: (cat) => set((state) => ({
+    activeCategories: state.activeCategories.includes(cat)
+      ? state.activeCategories.filter(c => c !== cat)
+      : [...state.activeCategories, cat]
+  })),
+
+  // ── User settings ──────────────────────────────────────────────────────────
+  userId: localStorage.getItem('sentinel_user_id') || null,
+  emergencyNumber: localStorage.getItem('sentinel_emergency_number') || '112',
+  setUserId: (id) => {
+    localStorage.setItem('sentinel_user_id', id)
+    set({ userId: id })
   },
-
-  // ── Country / config ───────────────────────────────────────────
-  countryCode: 'IN',
-  countryConfig: null,
-  setCountryCode: (code) => set({ countryCode: code }),
-  setCountryConfig: (cfg) => set({ countryConfig: cfg }),
-
-  // ── Selected zone ──────────────────────────────────────────────
-  selectedZone: null,
-  setSelectedZone: (zone) => set({ selectedZone: zone }),
-
-  // ── Heatmap filters ────────────────────────────────────────────
-  filters: {
-    city: 'Bengaluru',
-    riskLevel: 'all',
-    roadType: 'all',
-    showAccidents: true,
-    showForecast: false,
+  setEmergencyNumber: (num) => {
+    localStorage.setItem('sentinel_emergency_number', num)
+    set({ emergencyNumber: num })
   },
-  setFilter: (key, value) =>
-    set(state => ({ filters: { ...state.filters, [key]: value } })),
-
-  // ── Report draft ───────────────────────────────────────────────
-  reportDraft: {
-    image: null,
-    lat: null,
-    lng: null,
-    damageType: null,
-    roadType: 'Urban',
-    severity: 'medium',
-    description: '',
-  },
-  setReportField: (key, value) =>
-    set(state => ({ reportDraft: { ...state.reportDraft, [key]: value } })),
-  resetReportDraft: () =>
-    set({
-      reportDraft: {
-        image: null, lat: null, lng: null,
-        damageType: null, roadType: 'Urban', severity: 'medium', description: '',
-      },
-    }),
 }))
 
 export default useAppStore

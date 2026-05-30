@@ -1,17 +1,14 @@
-import React from 'react'
-
+/**
+ * SENTINEL SOS — Quick Action Chips
+ */
 const DEFAULT_ACTIONS = [
-  { label: '🕳 Report pothole',          message: 'Report pothole' },
-  { label: '🗺 Road risk',               message: 'What is the risk here?' },
-  { label: '🏛 Who maintains this road?', message: 'Who maintains this road?' },
-  { label: '💰 Repair budget',           message: 'What is the repair budget?' },
+  { label: '🚗 Accident', message: "I've been in an accident" },
+  { label: '🔧 Flat Tire', message: 'I have a flat tire' },
+  { label: '🚑 Need Ambulance', message: 'Someone is injured and needs an ambulance' },
+  { label: '❤️ Medical Emergency', message: 'Medical emergency, person is unconscious' },
 ]
 
-/**
- * QuickActions — horizontal scrollable chip row for common queries.
- * Tapping a chip sends the message immediately.
- */
-export default function QuickActions({ actions = DEFAULT_ACTIONS, onSelect, disabled }) {
+export default function QuickActions({ onSelect, actions = DEFAULT_ACTIONS }) {
   return (
     <div
       className="flex gap-2 overflow-x-auto pb-1 px-3 scrollbar-hide"
@@ -22,12 +19,11 @@ export default function QuickActions({ actions = DEFAULT_ACTIONS, onSelect, disa
         <button
           key={i}
           role="listitem"
-          onClick={() => !disabled && onSelect(action.message)}
-          disabled={disabled}
-          className="flex-shrink-0 text-xs bg-gray-800 hover:bg-gray-700 disabled:opacity-40
-                     text-emerald-300 border border-gray-700 px-3 py-2 rounded-full
-                     transition-colors min-h-[36px] whitespace-nowrap"
-          aria-label={`Quick action: ${action.label}`}
+          onClick={() => onSelect(action.message)}
+          className="shrink-0 text-xs bg-neutral-800 hover:bg-neutral-700 border border-neutral-700
+                     text-neutral-300 px-3 py-2 rounded-full min-h-[36px] whitespace-nowrap
+                     transition-colors"
+          aria-label={action.label}
         >
           {action.label}
         </button>

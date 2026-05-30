@@ -1,4 +1,0 @@
-# Place model weights here:
-#   yolov8_rdd2022.pt   — YOLOv8 fine-tuned on RDD2022 (required)
-#
-# xgboost_risk_model.pkl is no longer used — risk scoring uses a formula-based engine.

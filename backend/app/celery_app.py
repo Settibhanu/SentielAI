@@ -1,25 +1,26 @@
 """
-Celery application instance for SentinelAI.
+SENTINEL SOS — Celery application instance.
 
 Background tasks:
-  - process_report_image  : run YOLOv8 on a submitted report image,
-                            update the report record with AI severity + class
-  - refresh_zone_weather  : fetch rainfall for all zones and recompute API scores
+  refresh_location_cache     — Pre-warm Redis cache for a given area
+  generate_incident_summary  — Generate text summary of SOS event
+  preload_nearby_services    — Proactively cache all 8 service categories
+  update_emergency_dataset   — Scheduled: refresh cached DB locations (every 6h)
 """
 import os
 from celery import Celery
+from celery.schedules import crontab
 from dotenv import load_dotenv
 
-# Load .env so REDIS_URL and other vars are available when running locally
 load_dotenv()
 
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
 celery = Celery(
-    "sentinelai",
+    "sentinel_sos",
     broker=REDIS_URL,
     backend=REDIS_URL,
-    include=["app.tasks"],
+    include=["app.workers.tasks"],
 )
 
 celery.conf.update(
@@ -28,9 +29,15 @@ celery.conf.update(
     accept_content=["json"],
     timezone="UTC",
     enable_utc=True,
-    # Retry failed tasks up to 3 times with 30s delay
     task_acks_late=True,
     task_reject_on_worker_lost=True,
     task_default_retry_delay=30,
     task_max_retries=3,
+    # Celery Beat schedule
+    beat_schedule={
+        "update-emergency-dataset-every-6h": {
+            "task": "update_emergency_dataset",
+            "schedule": crontab(minute=0, hour="*/6"),  # every 6 hours
+        },
+    },
 )

@@ -1,112 +1,139 @@
 """
-Pydantic v2 schemas for request/response validation.
-Covers all endpoints from the HTML spec.
+SENTINEL SOS — Pydantic v2 request/response schemas.
 """
-from datetime import datetime, date
-from typing import Optional, List, Any
+from datetime import datetime
+from typing import Optional, List, Dict, Any
 from uuid import UUID
 
 from pydantic import BaseModel, Field
 
 
-# ── Report schemas ─────────────────────────────────────────────────────────────
+# ── Location schemas ───────────────────────────────────────────────────────────
 
-class ReportSubmit(BaseModel):
-    image: Optional[str] = Field(None, description="Base64-encoded image string")
+class LocationResultSchema(BaseModel):
+    osm_id: str
+    name: str
+    category: str
+    latitude: float
+    longitude: float
+    distance_km: float
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    opening_hours: Optional[str] = None
+    website: Optional[str] = None
+
+
+# ── Triage schemas ─────────────────────────────────────────────────────────────
+
+class TriageRequest(BaseModel):
+    description: str = Field(..., min_length=1)
+    latitude: float
+    longitude: float
+
+
+class TriageResultSchema(BaseModel):
+    severity: str                          # LOW|MEDIUM|HIGH|CRITICAL
+    call_emergency: bool
+    recommendations: List[str]
+    required_services: List[str]
+    first_aid_topic: Optional[str] = None
+    score: int = 0
+
+
+# ── SOS schemas ────────────────────────────────────────────────────────────────
+
+class SOSCreateRequest(BaseModel):
+    incident_type: str = Field(..., description="accident|ambulance|police|breakdown|flat_tire|fuel|medical|fire")
+    latitude: float
+    longitude: float
+    description: Optional[str] = ""
+    user_id: Optional[UUID] = None
+
+
+class SOSEventSchema(BaseModel):
+    id: UUID
+    incident_type: str
+    severity: str
+    latitude: float
+    longitude: float
+    description: Optional[str]
+    status: str
+    created_at: datetime
+    resolved_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+class SOSCreateResponse(BaseModel):
+    event: SOSEventSchema
+    triage: TriageResultSchema
+    nearby_services: Dict[str, List[LocationResultSchema]]
+
+
+class NearbyRequest(BaseModel):
     lat: float
-    lng: float
-    damage_type: str = Field(..., description="pothole|crack|flooding|broken_signal|missing_divider")
-    manual_severity: str = Field("medium", description="low|medium|high")
-    road_type: str = Field("Urban", description="NH|SH|MDR|Urban|Local")
-    country_code: str = Field("IN")
-    description: Optional[str] = None
-    synced_from_offline: bool = False
-    offline_queued_at: Optional[datetime] = None
-
-    @property
-    def manual_severity_numeric(self) -> float:
-        return {"low": 2.0, "medium": 5.0, "high": 8.0}.get(self.manual_severity, 5.0)
+    lon: float
+    radius: int = Field(default=5000, ge=500, le=50000)
+    categories: Optional[str] = None  # comma-separated
 
 
-class RoutingInfo(BaseModel):
-    routed_to: str
-    division: str
-    ee_email: str
-    ee_phone: str
-    sla_days: int
-    expected_resolution: str
-    message: str
+# ── Emergency Contact schemas ──────────────────────────────────────────────────
+
+class EmergencyContactCreate(BaseModel):
+    name: str = Field(..., min_length=1)
+    phone: str = Field(..., min_length=5)
+    relationship: str = Field(default="family")
 
 
-class ReportSubmitResponse(BaseModel):
-    report_id: UUID
-    ai_severity_score: float
-    ai_damage_class: str
-    zone_id: Optional[UUID] = None
-    zone_risk_level: str
-    routing: Optional[RoutingInfo] = None
+class EmergencyContactUpdate(BaseModel):
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    relationship: Optional[str] = None
 
 
-class ReportStatus(BaseModel):
+class EmergencyContactSchema(BaseModel):
+    id: UUID
+    user_id: UUID
+    name: str
+    phone: str
+    relationship: str
+
+    class Config:
+        from_attributes = True
+
+
+# ── User schemas ───────────────────────────────────────────────────────────────
+
+class UserCreate(BaseModel):
+    name: str
+    email: Optional[str] = None
+    phone: Optional[str] = None
+
+
+class UserSchema(BaseModel):
+    id: UUID
+    name: str
+    email: Optional[str]
+    phone: Optional[str]
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+# ── Incident history schemas ───────────────────────────────────────────────────
+
+class IncidentHistoryItem(BaseModel):
+    id: UUID
+    incident_type: str
+    severity: str
+    latitude: float
+    longitude: float
+    description: Optional[str]
     status: str
-    repair_assigned: bool
-    eta: Optional[str] = None
+    created_at: datetime
+    resolved_at: Optional[datetime] = None
 
-
-class OfflineSyncBatch(BaseModel):
-    reports: List[ReportSubmit]
-
-
-# ── Zone schemas ───────────────────────────────────────────────────────────────
-
-class ZoneSummary(BaseModel):
-    zone_id: str
-    zone_name: str
-    road_type: str
-    api_score: float
-    api_score_7day_forecast: float
-    risk_category: str
-    damage_reports_count: int
-    accident_count_1yr: int
-    last_relaying_date: Optional[str] = None
-    repair_status: Optional[str] = None
-
-
-class ContributingFactors(BaseModel):
-    infrastructure: float
-    accidents: float
-    weather: float
-    context: float
-
-
-class ZoneDetail(ZoneSummary):
-    fatal_count: int
-    contributing_factors: ContributingFactors
-    weather_risk_multiplier: Optional[float] = None
-
-
-# ── Repair schemas ─────────────────────────────────────────────────────────────
-
-class RepairAssign(BaseModel):
-    zone_id: UUID
-    contractor: str
-    budget: int = Field(..., description="Budget in local currency")
-    deadline: date
-    fund_source: str = Field("State PWD")
-    fund_source_url: Optional[str] = None
-
-
-class RepairRecord(BaseModel):
-    id: str
-    zone_id: str
-    zone_name: Optional[str] = None
-    status: str
-    contractor_name: Optional[str] = None
-    amount_sanctioned_inr: Optional[int] = None
-    amount_spent_inr: Optional[int] = None
-    fund_source: Optional[str] = None
-    fund_source_url: Optional[str] = None
-    estimated_completion: Optional[str] = None
-    actual_completion: Optional[str] = None
-    quality_score: Optional[float] = None
-    recurring_damage: bool = False
+    class Config:
+        from_attributes = True

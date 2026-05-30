@@ -1,76 +1,69 @@
-import React, { useEffect, useState } from 'react'
-
 /**
- * PwaInstallPrompt — shows a native-style install banner when the browser
- * fires the `beforeinstallprompt` event (Android Chrome / Edge).
- * Dismissed state is persisted in localStorage.
+ * SENTINEL SOS — PWA Install Prompt
  */
+import { useState, useEffect } from 'react'
+
 export default function PwaInstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState(null)
-  const [visible, setVisible] = useState(false)
+  const [show, setShow] = useState(false)
 
   useEffect(() => {
-    if (localStorage.getItem('pwa-dismissed')) return
+    const dismissed = localStorage.getItem('sentinel_pwa_dismissed')
+    if (dismissed) return
 
     const handler = (e) => {
       e.preventDefault()
       setDeferredPrompt(e)
-      setVisible(true)
+      setShow(true)
     }
     window.addEventListener('beforeinstallprompt', handler)
     return () => window.removeEventListener('beforeinstallprompt', handler)
   }, [])
 
-  async function handleInstall() {
+  const handleInstall = async () => {
     if (!deferredPrompt) return
     deferredPrompt.prompt()
     const { outcome } = await deferredPrompt.userChoice
-    if (outcome === 'accepted') {
-      setVisible(false)
-    }
+    if (outcome === 'accepted') setShow(false)
     setDeferredPrompt(null)
   }
 
-  function handleDismiss() {
-    setVisible(false)
-    localStorage.setItem('pwa-dismissed', '1')
+  const handleDismiss = () => {
+    localStorage.setItem('sentinel_pwa_dismissed', '1')
+    setShow(false)
   }
 
-  if (!visible) return null
+  if (!show) return null
 
   return (
     <div
-      className="pwa-prompt"
       role="dialog"
-      aria-label="Install SentinelAI app"
-      aria-modal="false"
+      aria-label="Install SENTINEL SOS"
+      className="fixed bottom-20 left-4 right-4 z-50 card border border-red-800 shadow-2xl"
     >
       <div className="flex items-start gap-3">
-        <span className="text-2xl flex-shrink-0">🛡</span>
+        <span className="text-2xl" aria-hidden="true">🛡</span>
         <div className="flex-1">
-          <div className="text-sm font-semibold text-white">Install SentinelAI</div>
-          <div className="text-xs text-gray-400 mt-0.5">
-            Add to home screen for offline access and faster reporting
-          </div>
-          <div className="flex gap-2 mt-3">
-            <button
-              onClick={handleInstall}
-              className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs
-                         font-semibold py-2 rounded-lg min-h-[36px] transition-colors"
-              aria-label="Install app"
-            >
-              Install
-            </button>
-            <button
-              onClick={handleDismiss}
-              className="flex-1 bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs
-                         py-2 rounded-lg min-h-[36px] transition-colors"
-              aria-label="Dismiss install prompt"
-            >
-              Not now
-            </button>
-          </div>
+          <p className="font-heading text-base text-white">Install SENTINEL SOS</p>
+          <p className="text-xs text-neutral-400 mt-0.5">
+            Add to home screen for instant access in emergencies — works offline.
+          </p>
         </div>
+      </div>
+      <div className="flex gap-2 mt-3">
+        <button
+          onClick={handleInstall}
+          className="flex-1 btn-emergency bg-red-600 hover:bg-red-700 text-white text-sm py-2 min-h-[44px]"
+        >
+          Install
+        </button>
+        <button
+          onClick={handleDismiss}
+          className="px-4 py-2 text-sm text-neutral-400 hover:text-white min-h-[44px]"
+          aria-label="Dismiss install prompt"
+        >
+          Not now
+        </button>
       </div>
     </div>
   )

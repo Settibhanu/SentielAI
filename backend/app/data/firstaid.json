@@ -1,0 +1,260 @@
+[
+  {
+    "id": "cpr",
+    "title": "CPR (Cardiopulmonary Resuscitation)",
+    "icon": "❤️",
+    "severity_indicator": "CRITICAL",
+    "summary": "CPR keeps blood and oxygen flowing when the heart has stopped. Begin immediately — every minute without CPR reduces survival by 10%.",
+    "steps": [
+      "Step 1: Ensure the scene is safe. Check for hazards before approaching.",
+      "Step 2: Check responsiveness — tap shoulders firmly and shout 'Are you okay?'",
+      "Step 3: Call 112 / 911 immediately or ask a bystander to call while you begin CPR.",
+      "Step 4: Lay the person on their back on a firm, flat surface.",
+      "Step 5: Tilt the head back gently and lift the chin to open the airway.",
+      "Step 6: Check for breathing — look, listen, feel for no more than 10 seconds.",
+      "Step 7 (ADULT): Place heel of one hand on center of chest (lower half of breastbone). Place other hand on top, interlace fingers.",
+      "Step 8: Keep arms straight. Press down hard and fast — at least 5 cm (2 inches) deep at 100–120 compressions per minute (to the beat of 'Stayin' Alive').",
+      "Step 9: Allow full chest recoil between compressions. Do not lean on the chest.",
+      "Step 10: After 30 compressions, give 2 rescue breaths (if trained). Pinch nose, seal mouth, breathe in for 1 second, watch chest rise.",
+      "Step 11: Continue 30:2 ratio until emergency services arrive, the person shows signs of life, or you are physically unable to continue.",
+      "Step 12 (CHILD 1–8 years): Use one or two hands. Compress 5 cm deep at 100–120/min. Give 2 gentle rescue breaths after 30 compressions.",
+      "Step 13 (INFANT under 1 year): Use 2 fingers on center of chest. Compress 4 cm deep. Give 2 gentle puffs of air after 30 compressions."
+    ],
+    "warnings": [
+      "Do NOT delay CPR to look for an AED — start compressions immediately.",
+      "Do NOT stop CPR unless the person recovers, emergency services take over, or you are exhausted.",
+      "Do NOT perform CPR on a person who is breathing normally.",
+      "Do NOT tilt the head if spinal injury is suspected — use jaw-thrust maneuver instead."
+    ],
+    "when_to_call_emergency": "Call 112 / 911 immediately when a person is unresponsive and not breathing normally.",
+    "video_search_term": "CPR tutorial Red Cross 2024"
+  },
+  {
+    "id": "bleeding_control",
+    "title": "Bleeding Control",
+    "icon": "🩸",
+    "severity_indicator": "HIGH",
+    "summary": "Uncontrolled bleeding can cause death within minutes. Direct pressure is the most effective first aid for most wounds.",
+    "steps": [
+      "Step 1: Ensure scene safety. Wear gloves if available to protect yourself.",
+      "Step 2: Call 112 / 911 for severe or arterial bleeding (bright red, spurting).",
+      "Step 3: Apply firm, direct pressure to the wound using a clean cloth, gauze, or clothing.",
+      "Step 4: Press hard and continuously — do not lift the cloth to check. If it soaks through, add more material on top.",
+      "Step 5: Maintain pressure for at least 10–15 minutes without releasing.",
+      "Step 6: If bleeding is on a limb and is life-threatening, apply a tourniquet 5–7 cm above the wound (not on a joint).",
+      "Step 7 (Tourniquet): Wrap the tourniquet twice around the limb. Tighten until bleeding stops. Note the time applied — write it on the person's skin.",
+      "Step 8: Elevate the injured limb above heart level if no fracture is suspected.",
+      "Step 9: Keep the person warm and lying down to prevent shock.",
+      "Step 10: Do not remove embedded objects — apply pressure around them.",
+      "Step 11: For internal bleeding (bruising, rigid abdomen, shock signs) — call 112 immediately, keep person still and warm."
+    ],
+    "warnings": [
+      "Do NOT remove a tourniquet once applied — only medical professionals should remove it.",
+      "Do NOT use a tourniquet on the neck, chest, or abdomen.",
+      "Do NOT probe or clean deep wounds — apply pressure and wait for help.",
+      "Do NOT give food or water to a person with severe bleeding."
+    ],
+    "when_to_call_emergency": "Call 112 for any wound that won't stop bleeding after 10 minutes of pressure, arterial bleeding, or suspected internal bleeding.",
+    "video_search_term": "Stop the Bleed tourniquet technique"
+  },
+  {
+    "id": "fractures",
+    "title": "Fractures & Broken Bones",
+    "icon": "🦴",
+    "severity_indicator": "HIGH",
+    "summary": "Immobilize fractures to prevent further injury. Never attempt to straighten a broken bone.",
+    "steps": [
+      "Step 1: Call 112 for open fractures (bone visible), fractures with severe bleeding, or suspected spinal/pelvic fractures.",
+      "Step 2: Do not attempt to straighten or realign the broken bone.",
+      "Step 3: Immobilize the fracture in the position found — use a splint, rolled newspaper, or firm padding.",
+      "Step 4: Extend the splint beyond the joints above and below the fracture.",
+      "Step 5: Secure the splint with bandages, cloth strips, or tape — firm but not tight enough to cut circulation.",
+      "Step 6: Check circulation below the fracture — feel for pulse, check skin color and warmth.",
+      "Step 7: Apply ice wrapped in cloth to reduce swelling — 20 minutes on, 20 minutes off.",
+      "Step 8: Elevate the injured limb if possible and if it doesn't cause more pain.",
+      "Step 9: For suspected rib fractures — support the arm on the injured side in a sling. Do not bind the chest tightly.",
+      "Step 10: Monitor for shock — pale skin, rapid breathing, confusion. Keep person warm and calm."
+    ],
+    "warnings": [
+      "Do NOT move a person with suspected spinal, neck, or pelvic fracture unless in immediate danger.",
+      "Do NOT attempt to push a protruding bone back in.",
+      "Do NOT apply a splint so tightly it cuts off circulation.",
+      "Do NOT give aspirin — it increases bleeding risk."
+    ],
+    "when_to_call_emergency": "Call 112 for open fractures, suspected spinal injury, fractures with severe bleeding, or if the person cannot be safely moved.",
+    "video_search_term": "fracture splinting first aid Red Cross"
+  },
+  {
+    "id": "burns",
+    "title": "Burns",
+    "icon": "🔥",
+    "severity_indicator": "HIGH",
+    "summary": "Cool the burn immediately with cool running water. Never use ice, butter, or toothpaste.",
+    "steps": [
+      "Step 1: Remove the person from the source of the burn. Ensure scene safety.",
+      "Step 2: Call 112 for burns covering large areas, burns on face/hands/genitals/joints, chemical or electrical burns, or burns in children.",
+      "Step 3: Cool the burn immediately with cool (not cold) running water for at least 20 minutes.",
+      "Step 4: Remove clothing and jewelry near the burn — unless stuck to the skin.",
+      "Step 5: Do not break blisters — they protect against infection.",
+      "Step 6: Cover the burn loosely with a clean, non-fluffy material (cling film, clean plastic bag, or sterile dressing).",
+      "Step 7: Keep the person warm — burns cause rapid heat loss and shock.",
+      "Step 8: Elevate burned limbs above heart level to reduce swelling.",
+      "Step 9: For chemical burns — brush off dry chemicals first, then flush with large amounts of water for 20+ minutes.",
+      "Step 10: For electrical burns — do not touch the person until power is off. Call 112 immediately — internal injuries may not be visible."
+    ],
+    "warnings": [
+      "Do NOT use ice, iced water, butter, oil, toothpaste, or any cream on burns.",
+      "Do NOT remove clothing stuck to burned skin.",
+      "Do NOT break blisters.",
+      "Do NOT cover burns with fluffy cotton wool — fibers stick to wounds."
+    ],
+    "when_to_call_emergency": "Call 112 for burns larger than the person's palm, burns on face/hands/feet/genitals, all chemical or electrical burns, and burns in children or elderly.",
+    "video_search_term": "burn first aid treatment NHS"
+  },
+  {
+    "id": "shock",
+    "title": "Shock",
+    "icon": "⚡",
+    "severity_indicator": "CRITICAL",
+    "summary": "Shock is a life-threatening condition where the body's organs don't receive enough blood. Act immediately.",
+    "steps": [
+      "Step 1: Call 112 immediately — shock is a medical emergency.",
+      "Step 2: Lay the person down on their back on a flat surface.",
+      "Step 3: Raise the legs 20–30 cm (8–12 inches) above heart level — unless head, neck, spine, or leg injury is suspected.",
+      "Step 4: Do not raise legs if the person has a head injury, breathing difficulty, or broken leg.",
+      "Step 5: Keep the person warm — cover with a blanket or coat. Prevent heat loss from the ground.",
+      "Step 6: Loosen tight clothing around neck, chest, and waist.",
+      "Step 7: Do not give food or water — the person may need surgery.",
+      "Step 8: Reassure the person — keep them calm and still.",
+      "Step 9: Monitor breathing and pulse every 2 minutes.",
+      "Step 10: If the person becomes unconscious and stops breathing, begin CPR.",
+      "Step 11: Control any visible bleeding with direct pressure.",
+      "Step 12: Do not leave the person alone."
+    ],
+    "warnings": [
+      "Do NOT give food, water, or alcohol.",
+      "Do NOT apply a heat source directly to the skin.",
+      "Do NOT leave the person alone.",
+      "Do NOT raise legs if spinal injury, head injury, or broken leg is suspected."
+    ],
+    "when_to_call_emergency": "Call 112 immediately when shock is suspected — pale/cold/clammy skin, rapid weak pulse, rapid breathing, confusion, or loss of consciousness.",
+    "video_search_term": "treating shock first aid St John Ambulance"
+  },
+  {
+    "id": "unconscious_person",
+    "title": "Unconscious Person",
+    "icon": "😴",
+    "severity_indicator": "CRITICAL",
+    "summary": "An unconscious person who is breathing should be placed in the recovery position to keep the airway open.",
+    "steps": [
+      "Step 1: Check for danger — ensure the scene is safe.",
+      "Step 2: Check responsiveness — tap shoulders and shout 'Are you okay?'",
+      "Step 3: Call 112 immediately.",
+      "Step 4: Open the airway — tilt head back, lift chin.",
+      "Step 5: Check for breathing — look, listen, feel for up to 10 seconds.",
+      "Step 6: If NOT breathing — begin CPR immediately (see CPR guide).",
+      "Step 7: If BREATHING — place in recovery position:",
+      "  a) Kneel beside the person. Place the arm nearest you at a right angle to the body.",
+      "  b) Bring the far arm across the chest, hold the back of the hand against the near cheek.",
+      "  c) With your other hand, pull up the far knee so the foot is flat on the floor.",
+      "  d) Keeping the hand against the cheek, pull on the bent knee to roll the person toward you.",
+      "  e) Tilt the head back to keep the airway open. Adjust the top knee so the hip and knee are at right angles.",
+      "Step 8: Monitor breathing continuously until emergency services arrive.",
+      "Step 9: If breathing stops at any point, roll onto back and begin CPR.",
+      "Step 10: Do not give anything by mouth.",
+      "Step 11: Keep the person warm with a blanket."
+    ],
+    "warnings": [
+      "Do NOT leave an unconscious person alone.",
+      "Do NOT give food or water.",
+      "Do NOT move the person if spinal injury is suspected — only move if airway cannot be maintained.",
+      "Do NOT put anything in the mouth."
+    ],
+    "when_to_call_emergency": "Call 112 immediately for any unconscious person.",
+    "video_search_term": "recovery position unconscious person St John Ambulance"
+  },
+  {
+    "id": "road_accident_response",
+    "title": "Road Accident Response",
+    "icon": "🚗",
+    "severity_indicator": "CRITICAL",
+    "summary": "A systematic approach to road accident scenes — protect, alert, locate, manage. Safety first, always.",
+    "steps": [
+      "Step 1 — PROTECT: Switch on hazard lights. Park safely off the road. Wear a high-visibility vest if available.",
+      "Step 2 — PROTECT: Place warning triangles 45m behind the accident on a normal road, 150m on a motorway.",
+      "Step 3 — ALERT: Call 112 / 911. State: your location (road name, landmarks, GPS coordinates), number of vehicles, number of casualties, types of injuries.",
+      "Step 4 — LOCATE: Approach the scene carefully. Watch for fuel leaks, fire, unstable vehicles.",
+      "Step 5: Turn off vehicle ignitions if safe to do so — reduces fire risk.",
+      "Step 6: Do not move casualties unless there is immediate danger (fire, flooding).",
+      "Step 7: Check each casualty — are they conscious? Breathing?",
+      "Step 8: For unconscious casualties — open airway, check breathing. Begin CPR if not breathing.",
+      "Step 9: For conscious casualties — reassure them, keep them still, control bleeding.",
+      "Step 10: Do not remove helmets from motorcyclists unless airway is blocked and you cannot maintain it otherwise.",
+      "Step 11: Keep bystanders back — maintain a clear area for emergency vehicles.",
+      "Step 12: Stay on the line with emergency services — follow their instructions.",
+      "Step 13: When emergency services arrive — give a clear handover: number of casualties, injuries found, treatment given."
+    ],
+    "warnings": [
+      "Do NOT move casualties with suspected spinal injuries.",
+      "Do NOT smoke near the accident scene — fuel leaks are common.",
+      "Do NOT remove a motorcyclist's helmet unless absolutely necessary for airway management.",
+      "Do NOT block the road with your vehicle — pull well off to the side."
+    ],
+    "when_to_call_emergency": "Call 112 immediately for any road accident with injuries, unconscious persons, or trapped casualties.",
+    "video_search_term": "road accident first aid response ROSPA"
+  },
+  {
+    "id": "choking",
+    "title": "Choking (Heimlich Maneuver)",
+    "icon": "🫁",
+    "severity_indicator": "CRITICAL",
+    "summary": "Choking is a life-threatening emergency. Act immediately — a person can lose consciousness within minutes.",
+    "steps": [
+      "Step 1: Ask 'Are you choking?' If the person can cough, speak, or breathe — encourage them to keep coughing.",
+      "Step 2: If they cannot cough, speak, or breathe — call 112 and begin treatment immediately.",
+      "Step 3 — BACK BLOWS: Stand to the side and slightly behind. Support the chest with one hand. Give up to 5 firm back blows between the shoulder blades with the heel of your hand.",
+      "Step 4: Check after each blow — if the obstruction clears, stop.",
+      "Step 5 — ABDOMINAL THRUSTS (Heimlich): Stand behind the person. Place one foot forward for balance. Make a fist with one hand, place it thumb-side against the abdomen, just above the navel and below the breastbone.",
+      "Step 6: Grasp your fist with the other hand. Give up to 5 sharp, upward thrusts.",
+      "Step 7: Alternate 5 back blows and 5 abdominal thrusts until the object is expelled or the person loses consciousness.",
+      "Step 8: If the person becomes unconscious — lower them carefully to the floor, call 112, begin CPR.",
+      "Step 9 (INFANT under 1 year): Hold face-down on your forearm, head lower than chest. Give 5 back blows. Turn face-up, give 5 chest thrusts with 2 fingers on center of chest. Do NOT use abdominal thrusts on infants.",
+      "Step 10 (PREGNANT or OBESE): Use chest thrusts instead of abdominal thrusts — place hands on center of chest."
+    ],
+    "warnings": [
+      "Do NOT perform abdominal thrusts on infants under 1 year.",
+      "Do NOT do a blind finger sweep — only remove an object if you can clearly see it.",
+      "Do NOT slap a choking person on the back while they are upright and coughing effectively.",
+      "Always seek medical attention after abdominal thrusts — internal injury is possible."
+    ],
+    "when_to_call_emergency": "Call 112 if the person cannot cough, speak, or breathe, or if they lose consciousness.",
+    "video_search_term": "Heimlich maneuver choking adult child Red Cross"
+  },
+  {
+    "id": "spinal_injury",
+    "title": "Spinal Injury",
+    "icon": "🦷",
+    "severity_indicator": "CRITICAL",
+    "summary": "Suspected spinal injuries require extreme care. Incorrect movement can cause permanent paralysis.",
+    "steps": [
+      "Step 1: Call 112 immediately. Do not move the person.",
+      "Step 2: Suspect spinal injury if: high-speed collision, fall from height, diving accident, direct blow to head/neck/back, or person complains of neck/back pain, numbness, or tingling.",
+      "Step 3: Keep the person completely still — tell them not to move.",
+      "Step 4: Stabilize the head and neck in the position found — do not attempt to straighten.",
+      "Step 5: Kneel behind the person's head. Place your hands on either side of the head, fingers pointing toward the feet. Hold firmly without moving the head.",
+      "Step 6: Maintain this position until emergency services arrive.",
+      "Step 7: If the person must be moved (fire, flooding, no pulse) — use the log-roll technique with at least 3 people, keeping head, neck, and spine aligned.",
+      "Step 8: If the person is in a vehicle — do not remove them unless there is immediate danger. Wait for emergency services.",
+      "Step 9: Monitor breathing. If breathing stops — begin CPR, accepting that some movement is unavoidable.",
+      "Step 10: Keep the person warm and reassured. Do not give food or water."
+    ],
+    "warnings": [
+      "Do NOT move the person unless there is immediate life-threatening danger.",
+      "Do NOT remove a helmet — unless airway cannot be maintained.",
+      "Do NOT attempt to straighten the neck or spine.",
+      "Do NOT leave the person alone."
+    ],
+    "when_to_call_emergency": "Call 112 immediately for any suspected spinal injury.",
+    "video_search_term": "spinal injury first aid immobilization technique"
+  }
+]

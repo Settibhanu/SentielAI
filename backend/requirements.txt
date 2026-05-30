@@ -8,40 +8,21 @@ aiofiles==23.2.1
 sqlalchemy==2.0.27
 asyncpg==0.29.0
 alembic==1.13.1
-geoalchemy2==0.14.3
 psycopg2-binary==2.9.9
 
 # ── Task queue ────────────────────────────────────────────────────────────────
 celery==5.3.6
 redis==5.0.1
 
-# ── AI / ML (CPU-only) ────────────────────────────────────────────────────────
-# ultralytics pulls torch automatically; force CPU-only torch first via Dockerfile
-# or install torch+cpu before this file:
-#   pip install torch==2.2.2 torchvision==0.17.2 --index-url https://download.pytorch.org/whl/cpu
-ultralytics==8.1.18
-opencv-python-headless==4.9.0.80
-numpy==1.26.4
-Pillow==10.2.0
-
 # ── HTTP / external APIs ──────────────────────────────────────────────────────
 httpx==0.26.0
 requests==2.31.0
-
-# ── Geospatial ────────────────────────────────────────────────────────────────
-osmnx==1.9.1
-geopandas==0.14.3
-shapely==2.0.3
-pyproj==3.6.1
-
-# ── Data processing ───────────────────────────────────────────────────────────
-pandas==2.2.0
 
 # ── Validation / config ───────────────────────────────────────────────────────
 pydantic==2.6.1
 pydantic-settings==2.2.1
 python-dotenv==1.0.1
 
-# ── Utilities ─────────────────────────────────────────────────────────────────
+# ── Auth utilities ────────────────────────────────────────────────────────────
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
