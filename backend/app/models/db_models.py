@@ -5,7 +5,7 @@ import uuid
 from datetime import datetime
 from sqlalchemy import Column, String, Float, DateTime, ForeignKey, JSON
 from sqlalchemy.dialects.postgresql import UUID, JSONB
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import declarative_base, relationship as orm_relationship
 
 Base = declarative_base()
 
@@ -20,8 +20,8 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     # Relationships
-    contacts = relationship("EmergencyContact", back_populates="user", cascade="all, delete-orphan")
-    sos_events = relationship("SOSEvent", back_populates="user", cascade="all, delete-orphan")
+    contacts = orm_relationship("EmergencyContact", back_populates="user", cascade="all, delete-orphan")
+    sos_events = orm_relationship("SOSEvent", back_populates="user", cascade="all, delete-orphan")
 
 
 class EmergencyContact(Base):
@@ -34,7 +34,7 @@ class EmergencyContact(Base):
     relationship = Column(String, nullable=False)  # family|friend|colleague|doctor
 
     # Relationships
-    user = relationship("User", back_populates="contacts")
+    user = orm_relationship("User", back_populates="contacts")
 
 
 class SOSEvent(Base):
@@ -55,7 +55,7 @@ class SOSEvent(Base):
     triage_result = Column(JSONB, nullable=True)
 
     # Relationships
-    user = relationship("User", back_populates="sos_events")
+    user = orm_relationship("User", back_populates="sos_events")
 
 
 class CachedLocation(Base):
