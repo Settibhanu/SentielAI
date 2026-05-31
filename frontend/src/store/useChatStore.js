@@ -6,7 +6,7 @@ import { create } from 'zustand'
 const WELCOME_MESSAGE = {
   id: 'welcome',
   role: 'assistant',
-  content: '🛡 **SENTINEL SOS** — Emergency Assistant\n\nI\'m here to help in road emergencies. Tell me what\'s happening, or tap a quick action below.\n\nFor life-threatening emergencies: **CALL 112 / 911**',
+  content: '🛡 **SENTINEL SOS** — Emergency Assistant\n\nI\'m here to help in road emergencies. Tell me what\'s happening, or tap a quick action below.\n\nFor life-threatening emergencies: **CALL 112 / 108 / 100**',
   timestamp: new Date().toISOString(),
 }
 

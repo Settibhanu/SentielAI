@@ -154,7 +154,12 @@ export default function FirstAid() {
             <ol className="space-y-3">
               {selectedTopic.steps.map((step, idx) => {
                 // Highlight critical lines
-                const isCriticalStep = step.toLowerCase().includes('immediately') || step.toLowerCase().includes('112') || step.toLowerCase().includes('911') || step.toLowerCase().includes('cpr')
+                const isCriticalStep = step.toLowerCase().includes('immediately') || 
+                                       step.toLowerCase().includes('112') || 
+                                       step.toLowerCase().includes('108') || 
+                                       step.toLowerCase().includes('100') || 
+                                       step.toLowerCase().includes('911') || 
+                                       step.toLowerCase().includes('cpr')
                 return (
                   <li 
                     key={idx} 

@@ -50,7 +50,7 @@ LOW_KEYWORDS = [
 SEVERITY_CONFIG = {
     "CRITICAL": {
         "recommendations": [
-            "🚨 CALL 112 / 911 IMMEDIATELY — this is a life-threatening emergency",
+            "🚨 CALL 112 (National Emergency Helpline) IMMEDIATELY — life-threatening emergency",
             "Do NOT move the victim unless there is immediate danger (fire, traffic)",
             "Check for breathing — if absent, begin CPR immediately",
             "Apply firm pressure to any severe bleeding wounds",
@@ -65,7 +65,7 @@ SEVERITY_CONFIG = {
     },
     "HIGH": {
         "recommendations": [
-            "🚨 Call emergency services now — dial 112 / 911",
+            "🚨 Call emergency services now — dial 112 / 108 / 100",
             "Do not move injured persons unless in immediate danger",
             "Apply direct pressure to bleeding wounds with clean cloth",
             "Immobilize suspected fractures — do not attempt to straighten",

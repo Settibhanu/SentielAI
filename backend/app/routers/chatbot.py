@@ -102,7 +102,7 @@ def generate_sentinel_response(
             "Use the Map tab to see hospitals, police, and ambulances near you."
         )
         if triage.call_emergency:
-            reply += "\n\n🚨 **CALL 112 / 911 NOW**"
+            reply += "\n\n🚨 **CALL 112 / 108 NOW**"
         actions = [
             {"type": "navigate", "label": "🗺 Open Emergency Map", "path": "/map"},
             {"type": "navigate", "label": "📋 First Aid Guide", "path": "/firstaid/road_accident_response"},
@@ -114,12 +114,12 @@ def generate_sentinel_response(
         reply = (
             "🚨 **MEDICAL EMERGENCY**\n\n"
             "**Critical steps:**\n"
-            "• Call 112 / 911 immediately\n"
+            "• Call 112 / 108 immediately\n"
             "• Check if the person is breathing\n"
             "• If not breathing — begin CPR now\n"
             "• If breathing — place in recovery position\n"
             "• Do not move if spinal injury suspected\n\n"
-            "🚨 **CALL 112 / 911 NOW**"
+            "🚨 **CALL 112 / 108 NOW**"
         )
         actions = [
             {"type": "navigate", "label": "❤️ CPR Guide", "path": "/firstaid/cpr"},
@@ -172,7 +172,7 @@ def generate_sentinel_response(
     elif intent == "police":
         reply = (
             "👮 **POLICE ASSISTANCE**\n\n"
-            "• Emergency: **Call 112 / 911**\n"
+            "• Emergency: **Call 112 / 100**\n"
             "• For non-emergency: visit the nearest police station\n\n"
             "**Finding nearest police stations...**"
         )
@@ -183,13 +183,13 @@ def generate_sentinel_response(
     elif intent == "fire":
         reply = (
             "🔥 **FIRE EMERGENCY**\n\n"
-            "🚨 **CALL 112 / 911 IMMEDIATELY**\n\n"
+            "🚨 **CALL 112 / 101 IMMEDIATELY**\n\n"
             "• Get everyone away from the vehicle\n"
             "• Do NOT attempt to retrieve belongings\n"
             "• Stay upwind of smoke\n"
             "• Do NOT open the hood if engine is on fire\n"
             "• Wait at a safe distance for fire services\n\n"
-            "🚨 **CALL 112 / 911 NOW**"
+            "🚨 **CALL 112 / 101 NOW**"
         )
         actions = [
             {"type": "navigate", "label": "🗺 Find Fire Stations", "path": "/map?category=fire_station"},
@@ -244,7 +244,7 @@ def generate_sentinel_response(
             "• 👮 **Police** — 'I need police'\n"
             "• 🔥 **Fire** — 'Vehicle is on fire'\n"
             "• 📋 **First Aid** — 'How do I treat a wound?'\n\n"
-            "For life-threatening emergencies: **CALL 112 / 911**"
+            "For life-threatening emergencies: **CALL 112 / 108 / 100**"
         )
 
     return {
