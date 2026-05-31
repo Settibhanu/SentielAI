@@ -70,5 +70,5 @@ class CachedLocation(Base):
     address = Column(String, nullable=True)
     osm_id = Column(String, nullable=True)
     country_code = Column(String, nullable=False, default="ALL")
-    metadata = Column(JSONB, nullable=True)
+    osm_metadata = Column(JSONB, nullable=True)
     last_updated = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)

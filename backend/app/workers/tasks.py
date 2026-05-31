@@ -185,7 +185,7 @@ def update_emergency_dataset():
                                 address=loc.address,
                                 osm_id=loc.osm_id,
                                 country_code=country_code,
-                                metadata={
+                                osm_metadata={
                                     "opening_hours": loc.opening_hours,
                                     "website": loc.website,
                                 },
