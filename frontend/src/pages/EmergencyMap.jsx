@@ -32,9 +32,9 @@ const CATEGORY_CONFIG = {
   towing:        { icon: '🚛', color: '#6B7280', label: 'Towing' },
 }
 
-// Fallback coordinate: Chennai, India
-const DEFAULT_LAT = 13.0827
-const DEFAULT_LON = 80.2707
+// Fallback coordinate: Bangalore, India
+const DEFAULT_LAT = 12.9716
+const DEFAULT_LON = 77.5946
 
 function createCategoryIcon(category) {
   const cfg = CATEGORY_CONFIG[category] || { icon: '📍', color: '#666' }
@@ -149,7 +149,7 @@ export default function EmergencyMap() {
             <h1 className="font-heading text-xl text-red-500 tracking-wider">🗺️ EMERGENCY SERVICES</h1>
             <p className="text-[10px] text-neutral-500 font-semibold tracking-wide">
               {usingFallback 
-                ? `📍 Default: Chennai (India)` 
+                ? `📍 Default: Bangalore (India)` 
                 : `📍 GPS: ${lat.toFixed(4)}, ${lon.toFixed(4)}`}
             </p>
           </div>

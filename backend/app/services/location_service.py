@@ -20,7 +20,13 @@ from dotenv import load_dotenv
 load_dotenv()
 logger = logging.getLogger(__name__)
 
-OVERPASS_URL = os.getenv("OVERPASS_API_URL", "https://overpass-api.de/api/interpreter")
+OVERPASS_URLS = [
+    os.getenv("OVERPASS_API_URL", "https://overpass-api.de/api/interpreter"),
+    "https://lz4.overpass-api.de/api/interpreter",
+    "https://z.overpass-api.de/api/interpreter",
+    "https://overpass.kumi.systems/api/interpreter",
+    "https://overpass.osm.ch/api/interpreter"
+]
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
 # ── OSM tag mappings per category ─────────────────────────────────────────────
@@ -260,16 +266,18 @@ class OverpassLocationProvider(LocationProvider):
         radius: int,
         category: str,
         client: httpx.AsyncClient,
-        retries: int = 3,
+        retries: int = 5,
     ) -> List[LocationResult]:
         """Fetch results for a single OSM tag pair with exponential backoff."""
         query = self._build_overpass_query(tag_key, tag_value, lat, lon, radius)
         delay = 1.0
 
         for attempt in range(retries):
+            # Rotate through available URLs
+            url = OVERPASS_URLS[attempt % len(OVERPASS_URLS)]
             try:
                 response = await client.post(
-                    OVERPASS_URL,
+                    url,
                     data={"data": query},
                     timeout=30.0,
                 )
@@ -304,8 +312,10 @@ class OverpassLocationProvider(LocationProvider):
             if attempt < retries - 1:
                 await asyncio.sleep(delay)
                 delay *= 2  # exponential backoff
-
-        return []
+            else:
+                # If all retries fail, raise an explicit exception to trigger DB fallback
+                logger.error("Overpass completely failed for %s=%s after %d attempts", tag_key, tag_value, retries)
+                raise ConnectionError(f"Overpass failed for {tag_key}={tag_value}")
 
     async def _fetch_category(
         self,
@@ -337,13 +347,20 @@ class OverpassLocationProvider(LocationProvider):
         # Flatten + deduplicate by osm_id
         seen_ids = set()
         all_results: List[LocationResult] = []
+        
+        all_failed = True
         for batch in results_nested:
             if isinstance(batch, Exception):
                 continue
+            all_failed = False
             for r in batch:
                 if r.osm_id not in seen_ids:
                     seen_ids.add(r.osm_id)
                     all_results.append(r)
+                    
+        if all_failed and results_nested:
+            # If every single tag query for this category failed, bubble up the error
+            raise Exception("All Overpass queries failed for category: " + category)
 
         # Sort by distance ascending
         all_results.sort(key=lambda r: r.distance_km)

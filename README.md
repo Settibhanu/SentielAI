@@ -83,7 +83,22 @@ This launches:
 *   **React Frontend** on port `3000`
 *   **Celery Worker & Celery Beat** (scheduled pre-warm tasks run every 6 hours)
 
-### 3. Verification & Local Manual Launch (Alternative)
+### 3. Quick Start (Windows)
+For the fastest setup on Windows, we provide an automated batch script that launches all necessary terminals at once.
+
+1. Ensure **Docker Desktop** is open and running.
+2. Double-click the `start.bat` file in the root directory.
+3. This will automatically open 4 separate command prompt windows:
+   - **Database & Redis**: Starts the PostgreSQL and Redis Docker containers.
+   - **FastAPI Backend**: Activates the virtual environment and starts the backend on port `8000`.
+   - **Celery Worker**: Activates the virtual environment and starts the background worker.
+   - **React Frontend**: Starts the Vite dev server on port `5173`.
+
+> [!TIP]
+> Swagger UI Docs will be available at: [http://localhost:8000/docs](http://localhost:8000/docs)
+> Frontend application will be available at: [http://localhost:5173](http://localhost:5173)
+
+### 4. Verification & Local Manual Launch (Alternative)
 If you prefer running services directly in separate command line terminals:
 
 **Backend Setup:**

@@ -1,14 +1,14 @@
 import React from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet'
 
-// Default center: Chennai
-const CHENNAI_CENTER = [13.0827, 80.2707]
+// Default center: Bangalore
+const BANGALORE_CENTER = [12.9716, 77.5946]
 
 /**
  * LeafletMap — base map wrapper.
  * Children (ZoneLayer, AccidentMarkers, etc.) are rendered inside the map context.
  */
-export default function LeafletMap({ children, center = CHENNAI_CENTER, zoom = 12 }) {
+export default function LeafletMap({ children, center = BANGALORE_CENTER, zoom = 12 }) {
   return (
     <MapContainer
       center={center}
